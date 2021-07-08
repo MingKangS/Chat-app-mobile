@@ -1,21 +1,44 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text, TouchableHighlight, StyleSheet, Image } from 'react-native';
+import axios from 'axios';
+import Auth from './login/auth';
+import Chat from './nav/routes/chatStack';
+import InitializingScreen from './nav/screens/initializing';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+class App extends React.Component {
+  state = {
+    currentView: "auth",
+  }
+
+  componentDidMount() {
+    // axios.get('http://localhost:5000/auth/user')
+    //   .then(res => {
+    //     this.setState({user: res.data});
+    //     if (res.data.username) {
+    //       this.updateAuth("main");
+    //     } else {
+    //       this.updateAuth("auth");
+    //     }
+    //   });
+  }
+
+  updateAuth = (currentView) => {
+    this.setState({ currentView });
+  }
+  
+  render() {
+    const { currentView } = this.state;
+    return (
+      <>
+
+        { currentView === 'auth' && <Auth updateAuth={this.updateAuth} />}
+        { currentView === 'initializing' && <InitializingScreen/>}
+        { currentView === 'main' && <Chat screenProps={{
+                    handler: (settings) => { this.updateAuth(settings) }
+                }} />}
+      </>
+    )
+  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
